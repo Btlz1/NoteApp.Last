@@ -8,20 +8,20 @@ public class NotesMappingProfile : Profile
 {
     public NotesMappingProfile()
     {
-        CreateMap<Notes, NotesVm>();
-        CreateMap<Notes, NotesListVm>();
-        CreateMap<IEnumerable<Notes>, ListOfNotes>()
+        CreateMap<Note, NotesVm>();
+        CreateMap<Note, NotesListVm>();
+        CreateMap<IEnumerable<Note>, ListOfNotes>()
             .ForCtorParam(nameof(ListOfNotes.Notes), 
 	           
                 source
                     => source.MapFrom(notesList 
                         => notesList.ToList()));
        
-        CreateMap<CreateNotesDto, Notes>()
+        CreateMap<CreateNotesDto, Note>()
             .ForMember(dest 
                 => dest.Id, opt 
                 => opt.Ignore());
-        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Notes>()
+        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Note>()
             .ForMember(dest 
                 => dest.Id, opt 
                 => opt.MapFrom(tuple 

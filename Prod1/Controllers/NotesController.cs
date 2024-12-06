@@ -28,7 +28,7 @@ public class NotesController : Controller
     [HttpPost]
     public ActionResult<int> AddNotes(CreateNotesDto dto)
     {
-        var newNotes = _mapper.Map<Notes>(dto);
+        var newNotes = _mapper.Map<Note>(dto);
         var notesId = _notesRepository.AddNotes(newNotes);
         return notesId;
     }
@@ -36,7 +36,7 @@ public class NotesController : Controller
     [HttpPut("{id}")]
     public ActionResult UpdateNotes(int id, UpdateNotesDto dto)
     {
-        var updatedNotes = _mapper.Map<Notes>((id, dto));
+        var updatedNotes = _mapper.Map<Note>((id, dto));
         _notesRepository.UpdateNotes(updatedNotes);
         
         return NoContent();

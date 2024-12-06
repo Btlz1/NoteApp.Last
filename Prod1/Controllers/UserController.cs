@@ -24,13 +24,13 @@ public class UserController : Controller
         return Ok(_mapper.Map<ListOfUsers>(users));
     }
 
-    [HttpGet("{login}")]
-    public ActionResult<UserVm> GetUser(string login)
+    [HttpGet("{id}")]
+    public ActionResult<UserVm> GetUser(int id)
     {
-        var user = _userRepository.GetUserBy(user => user.Login == login.Trim());
+        var user = _userRepository.GetUserBy(id);
         if (user is null)
         {
-            return NotFound(login);
+            return NotFound(id);
         }
         return Ok(_mapper.Map<UserVm>(user));
     }

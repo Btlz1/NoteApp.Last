@@ -1,7 +1,9 @@
 using System.Reflection;
+using btlz.Database;
 using btlz.Services;
+using Microsoft.EntityFrameworkCore;
 
-namespace WebApplication1;
+namespace WebANote3pplication1;
 
 public static class Composer
 {
@@ -9,6 +11,12 @@ public static class Composer
         this IServiceCollection services)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddDbContext<btlzDbContext>(options =>
+        {
+            options.UseNpgsql(
+                "Host=localhost;Port=5432;Username=postgres;Password=Kosmos_12;Database=postgres"
+            );
+        });
         return services;
     }
     

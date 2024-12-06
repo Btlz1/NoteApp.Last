@@ -5,5 +5,5 @@ namespace btlz.Services;
 public static class UserRepositoryExtension
 {
     public static IServiceCollection AddUserRepository(this IServiceCollection services)=>
-    services.AddSingleton<IUserRepository, UserRepository>();
+    services.AddScoped<IUserRepository, UserRepository>();
 }

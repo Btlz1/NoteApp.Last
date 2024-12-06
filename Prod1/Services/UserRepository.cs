@@ -1,4 +1,5 @@
 using btlz.Abstractions;
+using btlz.Database;
 using btlz.Exceptions;
 using btlz.Models;
 
@@ -7,55 +8,40 @@ namespace btlz.Services;
 
 public class UserRepository : IUserRepository
 {
-    private static readonly List<User> _users = new()
-    {
-        new()
-        {
-            Id = 0,
-            Login = "Beatles1",
-            Password = "Fedor"
-        },
-        new()
-        {
-            Id = 1,
-            Login = "FatherXCtulhu",
-            Password = "Leha-God"
-        }
-    };
+    private readonly btlzDbContext _dbContext;
+    public UserRepository(btlzDbContext dbContext) 
+        => _dbContext = dbContext;
     
-    public IEnumerable<User> GetUsers() => _users;
+    public IEnumerable<User> GetUsers() => _dbContext.Users;
     
-    public User? GetUserBy(Predicate<User> predicate)
-        => _users.FirstOrDefault(user =>  predicate(user));
+    public User? GetUserBy(int id)
+        => _dbContext.Users.FirstOrDefault(user => user.Id == id);
 
     public int AddUser(User user)
     {
-        var userId = _users.Count;
-        _users.Add(new User
-        {
-            Id = userId,
-            Login = user.Login,
-            Password = user.Password
-        });
+        _dbContext.Users.Add(user);
+        _dbContext.SaveChanges();
 
-        return userId;
+        return user.Id;
     }
 
     public void UpdateUser(User user)
     {
         var oldUser = TryGetUserByIdAndThrowIfNotFound(user.Id);
         oldUser.Login = user.Login;
+        _dbContext.SaveChanges();
     }
     
     public void DeleteUser(int id)
     {
         var user = TryGetUserByIdAndThrowIfNotFound(id);
-        _users.Remove(user);
+        _dbContext.Users.Remove(user);
+        _dbContext.SaveChanges();
     }
 
     private User TryGetUserByIdAndThrowIfNotFound(int id)
     {
-        var user = _users.FirstOrDefault(u => u.Id == id);
+        var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
         if (user is null)
         {
             throw new UserNotFoundException(id);

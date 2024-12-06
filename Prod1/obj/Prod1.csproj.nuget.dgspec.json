@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Федор\\Desktop\\notesLeha-main\\Prod1\\Prod1.csproj": {}
+    "C:\\Users\\Федор\\RiderProjects\\NoteApp.Last\\Prod1\\Prod1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Федор\\Desktop\\notesLeha-main\\Prod1\\Prod1.csproj": {
+    "C:\\Users\\Федор\\RiderProjects\\NoteApp.Last\\Prod1\\Prod1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Федор\\Desktop\\notesLeha-main\\Prod1\\Prod1.csproj",
+        "projectUniqueName": "C:\\Users\\Федор\\RiderProjects\\NoteApp.Last\\Prod1\\Prod1.csproj",
         "projectName": "Prod1",
-        "projectPath": "C:\\Users\\Федор\\Desktop\\notesLeha-main\\Prod1\\Prod1.csproj",
+        "projectPath": "C:\\Users\\Федор\\RiderProjects\\NoteApp.Last\\Prod1\\Prod1.csproj",
         "packagesPath": "C:\\Users\\Федор\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Федор\\Desktop\\notesLeha-main\\Prod1\\obj\\",
+        "outputPath": "C:\\Users\\Федор\\RiderProjects\\NoteApp.Last\\Prod1\\obj\\",
         "projectStyle": "PackageReference",
         "UsingMicrosoftNETSdk": false,
         "fallbackFolders": [
@@ -53,6 +53,20 @@
             "AutoMapper": {
               "target": "Package",
               "version": "[13.0.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

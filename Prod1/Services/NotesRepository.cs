@@ -6,7 +6,7 @@ namespace btlz.Services;
 
 public class NotesRepository : INotesRepository
 {
-    private static readonly List<Notes> _notes = new()
+    private static readonly List<Note> _notes = new()
     {
         new()
         {
@@ -18,30 +18,30 @@ public class NotesRepository : INotesRepository
         },
     };
     
-    public IEnumerable<Notes> GetNotes() => _notes;
+    public IEnumerable<Note> GetNotes() => _notes;
     
-    public Notes? GetNotesBy(Predicate<Notes> predicate)
+    public Note? GetNotesBy(Predicate<Note> predicate)
         => _notes.FirstOrDefault(note =>  predicate(note));
 
-    public int AddNotes(Notes notes)
+    public int AddNotes(Note note)
     {
         var notesId = _notes.Count;
-        _notes.Add(new Notes
+        _notes.Add(new Note
         {
             Id = notesId,
-            Name = notes.Name,
+            Name = note.Name,
             DateCreated = DateTime.UtcNow,
-            Description = notes.Description,
-            UserId = notes.UserId
+            Description = note.Description,
+            UserId = note.UserId
         });
         return notesId;
     }
 
-    public void UpdateNotes(Notes notes)
+    public void UpdateNotes(Note note)
     {
-        var oldNotes = TryGetUserByIdAndThrowIfNotFound(notes.Id);
-        oldNotes.Name = notes.Name;
-        oldNotes.Description = notes.Description;
+        var oldNotes = TryGetUserByIdAndThrowIfNotFound(note.Id);
+        oldNotes.Name = note.Name;
+        oldNotes.Description = note.Description;
         oldNotes.EditDate = DateTime.UtcNow;
     }
 
@@ -51,7 +51,7 @@ public class NotesRepository : INotesRepository
         _notes.Remove(notes);
     }
 
-    private Notes TryGetUserByIdAndThrowIfNotFound(int id)
+    private Note TryGetUserByIdAndThrowIfNotFound(int id)
     {
         var notes = _notes.FirstOrDefault(n => n.Id == id);
         if (notes is null)
