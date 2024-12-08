@@ -3,7 +3,7 @@ using btlz.Database;
 using btlz.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebANote3pplication1;
+namespace WebApplication1;
 
 public static class Composer
 {

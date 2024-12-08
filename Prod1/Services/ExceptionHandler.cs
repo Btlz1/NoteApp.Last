@@ -24,6 +24,17 @@ public class ExceptionHandler : IExceptionHandler
             
             return true;
         }
+        if (exception is NotesNotFoundException notesNotFoundException)
+        {
+		        
+            httpContext.Response.ContentType = MediaTypeNames.Text.Plain;
+            
+            httpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+            
+            await httpContext.Response.WriteAsync(notesNotFoundException.Message);
+            
+            return true;
+        }
        
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         

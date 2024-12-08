@@ -2,7 +2,8 @@ using btlz.Abstractions;
 using btlz.Exceptions;
 using btlz.Models;
 using btlz.Database;
-using btlz.Controllers;
+using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace btlz.Services;
 
@@ -16,7 +17,7 @@ public class NotesRepository : INotesRepository
 
     public IEnumerable<Note> GetNotesByUserId(int id)
     {
-        var userId = TryGetNotesByUserIdAndThrowIfNotFound(id);
+        var wrongUserId = TryGetNotesByUserIdAndThrowIfNotFound(id);
         
         var notes = _dbContext.Notes.Where(note => note.UserId == id).ToList(); 
 
@@ -26,7 +27,7 @@ public class NotesRepository : INotesRepository
 
     public int AddNotes(Note note, int userId)
     {
-        var tut = TryGetNotesByUserIdAndThrowIfNotFound(userId);
+        var wrongUserId = TryGetNotesByUserIdAndThrowIfNotFound(userId);
         
         _dbContext.Notes.Add(note);
         note.DateCreated = DateTime.UtcNow;
@@ -39,6 +40,7 @@ public class NotesRepository : INotesRepository
     {
         
         var oldNotes = TryGetNotesByIdAndThrowIfNotFound(id);
+        
         oldNotes.Name = note.Name;
         oldNotes.Description = note.Description;
         oldNotes.EditDate = DateTime.UtcNow;
@@ -47,8 +49,8 @@ public class NotesRepository : INotesRepository
  
     public void DeleteNotes(int id)
     {
-        var notes = TryGetNotesByIdAndThrowIfNotFound(id);
-        _dbContext.Notes.Remove(notes);
+        var note = TryGetNotesByIdAndThrowIfNotFound(id);
+        _dbContext.Notes.Remove(note);
         _dbContext.SaveChanges();
     }
 
@@ -63,7 +65,7 @@ public class NotesRepository : INotesRepository
     }
     private User TryGetNotesByUserIdAndThrowIfNotFound(int id)
     {
-        var user = _dbContext.Users.FirstOrDefault(n => n.Id == id);
+        var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
         if (user is null)
         {
             throw new UserNotFoundException(id);
