@@ -1,40 +1,29 @@
 using btlz.Abstractions;
 using btlz.Exceptions;
 using btlz.Models;
+using btlz.Database;
+using btlz.Controllers;
 
 namespace btlz.Services;
 
 public class NotesRepository : INotesRepository
 {
-    private static readonly List<Note> _notes = new()
-    {
-        new()
-        {
-            Id = 0,
-            Name = "Первая заметка",
-            Description = "Моя самая первая заметочка, даже не знаю как ее описать. Ура Ура!",
-            DateCreated = DateTime.UtcNow,
-            UserId = 0
-        },
-    };
-    
-    public IEnumerable<Note> GetNotes() => _notes;
-    
-    public Note? GetNotesBy(Predicate<Note> predicate)
-        => _notes.FirstOrDefault(note =>  predicate(note));
+    private readonly btlzDbContext _dbContext;
 
-    public int AddNotes(Note note)
+    public NotesRepository(btlzDbContext dbContext)
+        => _dbContext = dbContext;
+    public IEnumerable<Note> GetNotes() => _dbContext.Notes;
+    
+    public Note? GetNotesById(int id)
+        => _dbContext.Notes.FirstOrDefault(note =>  note.Id == id);
+
+    public int AddNotes(Note note, int usetId)
     {
-        var notesId = _notes.Count;
-        _notes.Add(new Note
-        {
-            Id = notesId,
-            Name = note.Name,
-            DateCreated = DateTime.UtcNow,
-            Description = note.Description,
-            UserId = note.UserId
-        });
-        return notesId;
+        _dbContext.Notes.Add(note);
+        note.DateCreated = DateTime.UtcNow;
+        note.UserId = usetId;
+        _dbContext.SaveChanges();
+        return note.Id;
     }
 
     public void UpdateNotes(Note note)
@@ -43,21 +32,23 @@ public class NotesRepository : INotesRepository
         oldNotes.Name = note.Name;
         oldNotes.Description = note.Description;
         oldNotes.EditDate = DateTime.UtcNow;
+        _dbContext.SaveChanges();
     }
 
     public void DeleteNotes(int id)
     {
         var notes = TryGetUserByIdAndThrowIfNotFound(id);
-        _notes.Remove(notes);
+        _dbContext.Notes.Remove(notes);
+        _dbContext.SaveChanges();
     }
 
     private Note TryGetUserByIdAndThrowIfNotFound(int id)
     {
-        var notes = _notes.FirstOrDefault(n => n.Id == id);
-        if (notes is null)
+        var note = _dbContext.Notes.FirstOrDefault(n => n.Id == id);
+        if (note is null)
         {
             throw new UserNotFoundException(id);
         }
-        return notes;
+        return note;
     }
 }

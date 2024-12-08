@@ -5,7 +5,7 @@ namespace btlz.Abstractions;
 public interface IUserRepository
 {
     IEnumerable<User> GetUsers();
-    User? GetUserBy(int id);
+    User? GetUserById(int id);
     int AddUser(User user);
     void UpdateUser(User user);
     void DeleteUser(int id);

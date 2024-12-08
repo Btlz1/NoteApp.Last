@@ -27,7 +27,7 @@ public class UserController : Controller
     [HttpGet("{id}")]
     public ActionResult<UserVm> GetUser(int id)
     {
-        var user = _userRepository.GetUserBy(id);
+        var user = _userRepository.GetUserById(id);
         if (user is null)
         {
             return NotFound(id);

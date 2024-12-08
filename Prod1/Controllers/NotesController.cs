@@ -3,6 +3,7 @@ using btlz.Abstractions;
 using btlz.Contracts;
 using AutoMapper;
 using btlz.Models;
+using Microsoft.JSInterop.Infrastructure;
 
 namespace btlz.Controllers;
 
@@ -29,7 +30,8 @@ public class NotesController : Controller
     public ActionResult<int> AddNotes(CreateNotesDto dto)
     {
         var newNotes = _mapper.Map<Note>(dto);
-        var notesId = _notesRepository.AddNotes(newNotes);
+        var userId = dto.UserId;  
+        var notesId = _notesRepository.AddNotes(newNotes, userId);
         return notesId;
     }
     
