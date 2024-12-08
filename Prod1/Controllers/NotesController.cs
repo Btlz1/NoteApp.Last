@@ -24,22 +24,28 @@ public class NotesController : Controller
 
         return Ok(_mapper.Map<ListOfNotes>(notes));
     }
-        
-    
+
+    [HttpGet("{userId}")]
+    public ActionResult<ListOfNotes> GetNotesByUserId(int userId)
+    {
+        var notes = _notesRepository.GetNotesByUserId(userId);
+        return Ok(_mapper.Map<ListOfNotes>(notes));;
+    }
+
     [HttpPost]
     public ActionResult<int> AddNotes(CreateNotesDto dto)
     {
         var newNotes = _mapper.Map<Note>(dto);
         var userId = dto.UserId;  
         var notesId = _notesRepository.AddNotes(newNotes, userId);
-        return notesId;
+        return Ok(_mapper.Map<ListOfNotes>(newNotes));;
     }
     
     [HttpPut("{id}")]
     public ActionResult UpdateNotes(int id, UpdateNotesDto dto)
     {
         var updatedNotes = _mapper.Map<Note>((id, dto));
-        _notesRepository.UpdateNotes(updatedNotes);
+        _notesRepository.UpdateNotes(id, updatedNotes);
         
         return NoContent();
     }

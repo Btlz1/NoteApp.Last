@@ -2,6 +2,7 @@ using btlz.Abstractions;
 using btlz.Database;
 using btlz.Exceptions;
 using btlz.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace btlz.Services;
@@ -13,9 +14,15 @@ public class UserRepository : IUserRepository
         => _dbContext = dbContext;
     
     public IEnumerable<User> GetUsers() => _dbContext.Users;
-    
+
     public User? GetUserById(int id)
-        => _dbContext.Users.FirstOrDefault(user => user.Id == id);
+    { 
+        var user = TryGetUserByIdAndThrowIfNotFound(id);
+        _dbContext.Users.FirstOrDefault(user => user.Id == id);
+        _dbContext.SaveChanges();
+        return user;
+    }
+
 
     public int AddUser(User user)
     {

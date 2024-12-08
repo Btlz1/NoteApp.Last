@@ -5,8 +5,8 @@ namespace btlz.Abstractions;
 public interface INotesRepository
 {
     IEnumerable<Note> GetNotes();
-    Note? GetNotesById(int id);
+    IEnumerable<Note> GetNotesByUserId(int id);
     int AddNotes(Note note, int userId);
-    void UpdateNotes(Note note);
+    void UpdateNotes(int id, Note note);
     void DeleteNotes(int id);
 }
