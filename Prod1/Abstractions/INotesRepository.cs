@@ -1,12 +1,13 @@
+using btlz.Contracts;
 using btlz.Models;
 
 namespace btlz.Abstractions;
 
 public interface INotesRepository
 {
-    IEnumerable<Note> GetNotes();
-    IEnumerable<Note> GetNotesByUserId(int userId);
-    int AddNotes(Note note, int userId);
-    void UpdateNotes(int id, Note note);
+    NotesVm GetNotes();
+    NotesVm GetNotesByUserId(int userId);
+    NotesVm AddNotes(int userId, CreateNotesDto notes);
+    NoteVm UpdateNotes(int id, UpdateNotesDto notes);
     void DeleteNotes(int id);
 }

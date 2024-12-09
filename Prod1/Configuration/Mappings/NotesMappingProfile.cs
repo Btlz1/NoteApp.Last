@@ -8,10 +8,10 @@ public class NotesMappingProfile : Profile
 {
     public NotesMappingProfile()
     {
-        CreateMap<Note, NotesVm>();
+        CreateMap<Note, NoteVm>();
         
-        CreateMap<IEnumerable<Note>, ListOfNotes>()
-            .ForCtorParam(nameof(ListOfNotes.Notes), 
+        CreateMap<IEnumerable<Note>, NotesVm>()
+            .ForCtorParam(nameof(NotesVm.Notes), 
 	           
                 source
                     => source.MapFrom(notesList 

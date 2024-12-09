@@ -1,42 +1,67 @@
+using AutoMapper;
 using btlz.Abstractions;
+using btlz.Configuration.Mappings;
+using btlz.Contracts;
 using btlz.Exceptions;
 using btlz.Models;
 using btlz.Database;
-using btlz.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace btlz.Services;
 
-public class NotesRepository : INotesRepository 
+public class NotesRepository : INotesRepository
 {
     private readonly btlzDbContext _dbContext;
+    private readonly IMapper _mapper;
     public NotesRepository(btlzDbContext dbContext)
         => _dbContext = dbContext;
-    public IEnumerable<Note> GetNotes() => _dbContext.Notes;
 
-    public IEnumerable<Note> GetNotesByUserId(int userId)
-        => _dbContext.Notes.Where(review => review.UserId == userId);
+    public NotesVm GetNotes()
+    {
+        var listOfNotes = (
+            from note in _dbContext.Notes
+            select new NoteVm(note.Id, note.Name, note.Description)
+        ).ToList();
+        var notes = new NotesVm(listOfNotes);
+        return notes;
+    }
+    
 
-
-    public int AddNotes(Note note, int userId) 
+    public NotesVm GetNotesByUserId(int userId)
+    {
+        var listOfNotes = (
+            from note in _dbContext.Notes
+            join user in _dbContext.Users on note.UserId equals user.Id
+            select new NoteVm(note.Id, note.Name, note.Description)
+        ).ToList();
+        var notes = new NotesVm(listOfNotes);
+        return notes;
+    }
+    
+    public NotesVm AddNotes(int userId, CreateNotesDto dto) 
     {
         _ = TryGetUserByIdAndThrowIfNotFound(userId);
+        var note = _mapper.Map<Note>(dto); 
         _dbContext.Notes.Add(note);
-        note.DateCreated = DateTime.UtcNow;
-        note.UserId = userId;
         _dbContext.SaveChanges();
-        return note.Id;
+        return _mapper.Map<NotesVm>(note);
     }
 
-    public void UpdateNotes(int id, Note note)
+    public NoteVm UpdateNotes(int id, UpdateNotesDto dto)
     {
         var oldNotes = TryGetNotesByIdAndThrowIfNotFound(id);
         
-        oldNotes.Name = note.Name;
-        oldNotes.Description = note.Description;
+        oldNotes.Name = dto.Name;
+        oldNotes.Description = dto.Description;
         oldNotes.EditDate = DateTime.UtcNow;
         _dbContext.SaveChanges();
+        return new NoteVm(oldNotes.Id, oldNotes.Name, oldNotes.Description)
+        {
+            Id = oldNotes.Id,
+            Name = oldNotes.Name,
+            Description = oldNotes.Description,
+        };
     }
  
     public void DeleteNotes(int id)

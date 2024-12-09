@@ -13,39 +13,24 @@ public class NotesController : BaseController
     private readonly INotesRepository _notesRepository;
     private readonly IUserRepository _userRepository;
     
-    public NotesController(INotesRepository notesRepository, IMapper mapper) : base(mapper)
+    public NotesController(INotesRepository notesRepository) 
         => _notesRepository = notesRepository;
 
     [HttpGet]
-    public ActionResult<ListOfNotes> GetNotes()
-    {
-        var notes = _notesRepository.GetNotes();
-        return Ok(Mapper.Map<ListOfNotes>(notes));
-    }
-
+    public ActionResult<NotesVm> GetNotes()
+        => Ok(_notesRepository.GetNotes());
+    
     [HttpGet("{userId}")]
-    public ActionResult<ListOfNotes> GetNotesByUserId(int userId)
-    {
-        var notes = _notesRepository.GetNotesByUserId(userId);
-        return Ok(Mapper.Map<ListOfNotes>(notes));;
-    }
-
+    public ActionResult<NotesVm> GetNotesByUserId(int userId)
+        => Ok(_notesRepository.GetNotesByUserId(userId));
+    
     [HttpPost]
-    public ActionResult<int> AddNotes(CreateNotesDto dto)
-    {
-        var newNotes = Mapper.Map<Note>(dto);
-        var userId = dto.UserId;  
-        var notesId = _notesRepository.AddNotes(newNotes, userId);
-        return Ok(notesId);
-    }
+    public ActionResult<int> AddNotes(int userId, CreateNotesDto dto)
+        => Ok(_notesRepository.AddNotes(userId, dto));
     
     [HttpPut("{id}")]
     public ActionResult UpdateNotes(int id, UpdateNotesDto dto)
-    {
-        var updatedNotes = Mapper.Map<Note>((id, dto));
-        _notesRepository.UpdateNotes(id, updatedNotes);
-        return NoContent();
-    }
+        => Ok(_notesRepository.UpdateNotes(id, dto));
     
     [HttpDelete("{id}")]
     public ActionResult DeleteNotes(int id)

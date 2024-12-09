@@ -10,10 +10,10 @@ public class UserMappingProfile : Profile
     {
         CreateMap<User, UserVm>();
         
-        CreateMap<User, UserListVm>();
+        CreateMap<User, UsersVm>();
        
-        CreateMap<IEnumerable<User>, ListOfUsers>()
-            .ForCtorParam(nameof(ListOfUsers.Users), 
+        CreateMap<IEnumerable<User>, UsersVm>()
+            .ForCtorParam(nameof(UsersVm.Users), 
 	           
 	            source
 		            => source.MapFrom(userList 

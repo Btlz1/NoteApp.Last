@@ -1,12 +1,13 @@
+using btlz.Contracts;
 using btlz.Models;
 
 namespace btlz.Abstractions;
 
 public interface IUserRepository
 {
-    IEnumerable<User> GetUsers();
-    User? GetUserById(int id);
-    int AddUser(User user);
-    void UpdateUser(User user);
+    UsersVm GetUsers();
+    UsersVm? GetUserById(int id);
+    UsersVm AddUser(CreateUserDto dto);
+    UserVm UpdateUser(int userId, UpdateUserDto dto);
     void DeleteUser(int id);
 }
