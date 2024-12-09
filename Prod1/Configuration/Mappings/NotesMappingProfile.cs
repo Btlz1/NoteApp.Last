@@ -23,24 +23,25 @@ public class NotesMappingProfile : Profile
                 => opt.Ignore())
             .ForMember(dest => dest.Name, 
                 opt 
-                    => opt.MapFrom(tuple 
-                        => tuple.Name.Trim()))
+                    => opt.MapFrom(dest 
+                        => dest.Name.Trim()))
             .ForMember(dest => dest.Description, 
                 opt 
-                    => opt.MapFrom(tuple 
-                        => tuple.Description.Trim()));
+                    => opt.MapFrom(dest 
+                        => dest.Description.Trim()));
         CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Note>()
-            .ForMember(dest 
-                => dest.Id, opt 
-                => opt.MapFrom(tuple 
-                    => tuple.NotesId))
-            .ForMember(dest => dest.Name, 
-                opt 
-                    => opt.MapFrom(tuple 
-                        => tuple.UpdateDto.Name.Trim()))
-            .ForMember(dest => dest.Description, 
-                opt 
-                    => opt.MapFrom(tuple 
-                        => tuple.UpdateDto.Description.Trim()));
+            .ForMember(dest
+                => dest.Id, opt
+                => opt.MapFrom(dest
+                    => dest.NotesId))
+            .ForMember(dest => dest.Name,
+                opt
+                    => opt.MapFrom(dest
+                        => dest.UpdateDto.Name.Trim()))
+            .ForMember(dest => dest.Description,
+                opt
+                    => opt.MapFrom(dest
+                        => dest.UpdateDto.Description.Trim()));
+
     }
 }

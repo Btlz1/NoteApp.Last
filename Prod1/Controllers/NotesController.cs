@@ -4,7 +4,6 @@ using btlz.Contracts;
 using AutoMapper;
 using btlz.Models;
 
-
 namespace btlz.Controllers;
 
 [ApiController]
@@ -21,7 +20,6 @@ public class NotesController : BaseController
     public ActionResult<ListOfNotes> GetNotes()
     {
         var notes = _notesRepository.GetNotes();
-
         return Ok(Mapper.Map<ListOfNotes>(notes));
     }
 
@@ -38,7 +36,7 @@ public class NotesController : BaseController
         var newNotes = Mapper.Map<Note>(dto);
         var userId = dto.UserId;  
         var notesId = _notesRepository.AddNotes(newNotes, userId);
-        return Ok(newNotes);
+        return Ok(notesId);
     }
     
     [HttpPut("{id}")]
@@ -46,7 +44,6 @@ public class NotesController : BaseController
     {
         var updatedNotes = Mapper.Map<Note>((id, dto));
         _notesRepository.UpdateNotes(id, updatedNotes);
-        
         return NoContent();
     }
     
@@ -54,7 +51,6 @@ public class NotesController : BaseController
     public ActionResult DeleteNotes(int id)
     {
         _notesRepository.DeleteNotes(id);
-
         return NoContent();
     }
     

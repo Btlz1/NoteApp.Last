@@ -8,7 +8,6 @@ namespace btlz.Controllers;
 public abstract class BaseController : Controller
 {
     protected IMapper Mapper;
-
     protected BaseController(IMapper mapper)
         => Mapper = mapper;
 }

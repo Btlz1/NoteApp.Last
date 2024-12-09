@@ -1,7 +1,5 @@
 using WebApplication1;
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
@@ -10,7 +8,6 @@ builder.Services
     .AddApplicationServices()
     .AddControllers();
 
-    
 var app = builder.Build();
 
 app.UseExceptionHandler("/error");

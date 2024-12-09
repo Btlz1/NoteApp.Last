@@ -12,7 +12,6 @@ public class UserController : BaseController
 {
     private readonly IUserRepository _userRepository;
     
-
     public UserController(IUserRepository userRepository, IMapper mapper) : base(mapper)
         => _userRepository = userRepository;
 
@@ -20,7 +19,6 @@ public class UserController : BaseController
     public ActionResult<ListOfUsers> GetUsers()
     {
         var users = _userRepository.GetUsers();
-        
         return Ok(Mapper.Map<ListOfUsers>(users));
     }
 
@@ -39,9 +37,7 @@ public class UserController : BaseController
     public ActionResult<int> AddUser(CreateUserDto dto)
     {
         var newUser = Mapper.Map<User>(dto);
-       
         var userId = _userRepository.AddUser(newUser);
-        
         return Ok(userId);
     }
     
@@ -49,9 +45,7 @@ public class UserController : BaseController
     public ActionResult UpdateUser(int id, UpdateUserDto dto)
     {
         var updatedUser = Mapper.Map<User>((id, dto));
-       
         _userRepository.UpdateUser(updatedUser);
-
         return NoContent();
     }
     
@@ -59,7 +53,6 @@ public class UserController : BaseController
     public ActionResult DeleteUser(int id)
     {
         _userRepository.DeleteUser(id);
-
         return NoContent();
     }
     

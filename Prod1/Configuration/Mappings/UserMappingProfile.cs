@@ -25,20 +25,20 @@ public class UserMappingProfile : Profile
 		        => opt.Ignore())
 	        .ForMember(dest => dest.Login,
 		        opt
-			        => opt.MapFrom(tuple
-				        => tuple.Login.Trim()))
-	        .ForMember(dest => dest.Password, opt => opt.MapFrom(tuple
-		        => tuple.Password.Trim()));
+			        => opt.MapFrom(dest
+				        => dest.Login.Trim()))
+	        .ForMember(dest => dest.Password, opt => opt.MapFrom(dest
+		        => dest.Password.Trim()));
         
         CreateMap<(int UserId, UpdateUserDto UpdateDto), User>()
             .ForMember(dest 
 	            => dest.Id, opt 
-	            => opt.MapFrom(tuple 
-	            => tuple.UserId))
+	            => opt.MapFrom(dest 
+	            => dest.UserId))
             .ForMember(dest => dest.Login, 
 		            opt 
-			            => opt.MapFrom(tuple 
-				            => tuple.UpdateDto.Login.Trim()))
+			            => opt.MapFrom(dest 
+				            => dest.UpdateDto.Login.Trim()))
             .ForMember(dest => dest.Password, opt => opt.Ignore());
     }
 }

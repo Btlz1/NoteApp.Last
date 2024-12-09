@@ -2,12 +2,13 @@ using btlz.Abstractions;
 using btlz.Exceptions;
 using btlz.Models;
 using btlz.Database;
+using btlz.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 
 namespace btlz.Services;
 
-public class NotesRepository : INotesRepository
+public class NotesRepository : INotesRepository 
 {
     private readonly btlzDbContext _dbContext;
     public NotesRepository(btlzDbContext dbContext)
@@ -18,10 +19,9 @@ public class NotesRepository : INotesRepository
         => _dbContext.Notes.Where(review => review.UserId == userId);
 
 
-    public int AddNotes(Note note, int userId)
+    public int AddNotes(Note note, int userId) 
     {
-        var wrongUserId = TryGetNotesByUserIdAndThrowIfNotFound(userId);
-        
+        _ = TryGetUserByIdAndThrowIfNotFound(userId);
         _dbContext.Notes.Add(note);
         note.DateCreated = DateTime.UtcNow;
         note.UserId = userId;
@@ -31,7 +31,6 @@ public class NotesRepository : INotesRepository
 
     public void UpdateNotes(int id, Note note)
     {
-        
         var oldNotes = TryGetNotesByIdAndThrowIfNotFound(id);
         
         oldNotes.Name = note.Name;
@@ -56,7 +55,7 @@ public class NotesRepository : INotesRepository
         }
         return note;
     }
-    private User TryGetNotesByUserIdAndThrowIfNotFound(int id)
+    private User TryGetUserByIdAndThrowIfNotFound(int id)
     {
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
         if (user is null)

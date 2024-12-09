@@ -24,7 +24,6 @@ public static class Composer
     {
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
-        
         return services;
     }
 
@@ -32,7 +31,6 @@ public static class Composer
         IServiceCollection services)
     {
         services.AddExceptionHandler<ExceptionHandler>();
-
         services.AddUserRepository();
         services.AddNotesRepository();
         return services;

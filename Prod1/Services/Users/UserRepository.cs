@@ -17,13 +17,11 @@ public class UserRepository : IUserRepository
 
     public User? GetUserById(int id) 
         => _dbContext.Users.FirstOrDefault(user => user.Id == id);
-
-
+    
     public int AddUser(User user)
     {
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
-
         return user.Id;
     }
 
@@ -50,4 +48,5 @@ public class UserRepository : IUserRepository
         }
         return user;
     }
+    
 }
