@@ -9,7 +9,7 @@ public class NotesMappingProfile : Profile
     public NotesMappingProfile()
     {
         CreateMap<Note, NotesVm>();
-        CreateMap<Note, NotesListVm>();
+        
         CreateMap<IEnumerable<Note>, ListOfNotes>()
             .ForCtorParam(nameof(ListOfNotes.Notes), 
 	           

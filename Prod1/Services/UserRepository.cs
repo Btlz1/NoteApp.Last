@@ -15,13 +15,8 @@ public class UserRepository : IUserRepository
     
     public IEnumerable<User> GetUsers() => _dbContext.Users;
 
-    public User? GetUserById(int id)
-    { 
-        var user = TryGetUserByIdAndThrowIfNotFound(id);
-        _dbContext.Users.FirstOrDefault(user => user.Id == id);
-        _dbContext.SaveChanges();
-        return user;
-    }
+    public User? GetUserById(int id) 
+        => _dbContext.Users.FirstOrDefault(user => user.Id == id);
 
 
     public int AddUser(User user)

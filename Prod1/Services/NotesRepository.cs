@@ -10,19 +10,12 @@ namespace btlz.Services;
 public class NotesRepository : INotesRepository
 {
     private readonly btlzDbContext _dbContext;
-
     public NotesRepository(btlzDbContext dbContext)
         => _dbContext = dbContext;
     public IEnumerable<Note> GetNotes() => _dbContext.Notes;
 
-    public IEnumerable<Note> GetNotesByUserId(int id)
-    {
-        var wrongUserId = TryGetNotesByUserIdAndThrowIfNotFound(id);
-        
-        var notes = _dbContext.Notes.Where(note => note.UserId == id).ToList(); 
-
-        return notes; 
-    }
+    public IEnumerable<Note> GetNotesByUserId(int userId)
+        => _dbContext.Notes.Where(review => review.UserId == userId);
 
 
     public int AddNotes(Note note, int userId)
