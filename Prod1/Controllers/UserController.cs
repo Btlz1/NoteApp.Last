@@ -8,20 +8,20 @@ namespace btlz.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController : Controller
+public class UserController : BaseController
 {
     private readonly IUserRepository _userRepository;
-    private readonly IMapper _mapper;
+    
 
-    public UserController(IUserRepository userRepository, IMapper mapper)=>
-        (_userRepository, _mapper) = (userRepository, mapper);
+    public UserController(IUserRepository userRepository, IMapper mapper) : base(mapper)
+        => _userRepository = userRepository;
 
     [HttpGet]
     public ActionResult<ListOfUsers> GetUsers()
     {
         var users = _userRepository.GetUsers();
         
-        return Ok(_mapper.Map<ListOfUsers>(users));
+        return Ok(Mapper.Map<ListOfUsers>(users));
     }
 
     [HttpGet("{id}")]
@@ -32,13 +32,13 @@ public class UserController : Controller
         {
             return NotFound(id);
         }
-        return Ok(_mapper.Map<UserVm>(user));
+        return Ok(Mapper.Map<UserVm>(user));
     }
     
     [HttpPost]
     public ActionResult<int> AddUser(CreateUserDto dto)
     {
-        var newUser = _mapper.Map<User>(dto);
+        var newUser = Mapper.Map<User>(dto);
        
         var userId = _userRepository.AddUser(newUser);
         
@@ -48,7 +48,7 @@ public class UserController : Controller
     [HttpPut("{id}")]
     public ActionResult UpdateUser(int id, UpdateUserDto dto)
     {
-        var updatedUser = _mapper.Map<User>((id, dto));
+        var updatedUser = Mapper.Map<User>((id, dto));
        
         _userRepository.UpdateUser(updatedUser);
 

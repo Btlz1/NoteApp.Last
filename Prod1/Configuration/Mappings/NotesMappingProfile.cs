@@ -20,7 +20,15 @@ public class NotesMappingProfile : Profile
         CreateMap<CreateNotesDto, Note>()
             .ForMember(dest 
                 => dest.Id, opt 
-                => opt.Ignore());
+                => opt.Ignore())
+            .ForMember(dest => dest.Name, 
+                opt 
+                    => opt.MapFrom(tuple 
+                        => tuple.Name.Trim()))
+            .ForMember(dest => dest.Description, 
+                opt 
+                    => opt.MapFrom(tuple 
+                        => tuple.Description.Trim()));
         CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Note>()
             .ForMember(dest 
                 => dest.Id, opt 
