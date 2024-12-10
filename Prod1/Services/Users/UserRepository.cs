@@ -44,13 +44,15 @@ public class UserRepository : IUserRepository
         return user.Id;
     }
 
-    public UserVm UpdateUser(int userId, UpdateUserDto dto) 
+    public int UpdateUser(int userId, UpdateUserDto dto) 
     {
-        var oldUser = TryGetUserByIdAndThrowIfNotFound(userId);
-        oldUser.Login = dto.Login;
-        oldUser.Password = dto.Password;
+        var user = TryGetUserByIdAndThrowIfNotFound(userId);
+        
+        var updatedUser = _mapper.Map<(int, UpdateUserDto), User>((userId, dto));
+        user.Login = updatedUser.Login;
+        user.Password = updatedUser.Password;
         _dbContext.SaveChanges();
-        return new UserVm(oldUser.Id, oldUser.Login, oldUser.Password);
+        return user.Id;
     }
     
     public void DeleteUser(int id)

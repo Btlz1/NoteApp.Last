@@ -44,15 +44,15 @@ public class NotesRepository : INotesRepository
         return note.Id;
     }
 
-    public NoteVm UpdateNotes(int id, UpdateNotesDto dto)
+    public int UpdateNotes(int id, UpdateNotesDto dto)
     {
-        var oldNotes = TryGetNotesByIdAndThrowIfNotFound(id);
+        var note = TryGetNotesByIdAndThrowIfNotFound(id);
         
-        oldNotes.Name = dto.Name;
-        oldNotes.Description = dto.Description;
-        oldNotes.EditDate = DateTime.UtcNow;
+        var updatedNote = _mapper.Map<(int, UpdateNotesDto), Note>((id, dto));
+        note.Name = updatedNote.Name;
+        note.Description = updatedNote.Description;
         _dbContext.SaveChanges();
-        return new NoteVm(oldNotes.Id, oldNotes.Name, oldNotes.Description);
+        return note.Id;
     }
  
     public void DeleteNotes(int id)

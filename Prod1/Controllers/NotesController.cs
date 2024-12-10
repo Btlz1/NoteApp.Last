@@ -28,7 +28,7 @@ public class NotesController : BaseController
         => Ok(_notesRepository.AddNotes(userId, dto));
     
     [HttpPut("{id}")]
-    public ActionResult UpdateNotes(int id, UpdateNotesDto dto)
+    public ActionResult<int> UpdateNotes(int id, UpdateNotesDto dto)
         => Ok(_notesRepository.UpdateNotes(id, dto));
     
     [HttpDelete("{id}")]

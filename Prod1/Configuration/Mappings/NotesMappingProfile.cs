@@ -15,7 +15,7 @@ public class NotesMappingProfile : Profile
             .ForMember(dest => dest.Description, 
                 opt => opt.MapFrom(src => src.Description.Trim()));
         
-        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), NoteVm>()
+        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Note>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.NotesId))
             .ForMember(dest => dest.Name, 
                 opt => opt.MapFrom(src => src.UpdateDto.Name.Trim()))
