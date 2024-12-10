@@ -2,20 +2,24 @@ using System.Reflection;
 using btlz.Database;
 using btlz.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebApplication1.Configuration.DataBase;
 
 namespace WebApplication1;
 
 public static class Composer
 {
     public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services)
+        this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.Configure<btlzDbConnectionSettings>(
+            configuration.GetRequiredSection(nameof(btlzDbConnectionSettings)));
         services.AddDbContext<btlzDbContext>(options =>
         {
-            options.UseNpgsql(
-                "Host=localhost;Port=5432;Username=postgres;Password=Kosmos_12;Database=postgres"
-            );
+            using var scope = services.BuildServiceProvider().CreateScope();
+            var settings = scope.ServiceProvider.GetRequiredService<IOptions<btlzDbConnectionSettings>>().Value;
+            options.UseNpgsql(settings.ConnectionString);
         });
         return services;
     }
