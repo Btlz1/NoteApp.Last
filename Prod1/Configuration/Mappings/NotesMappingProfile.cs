@@ -1,6 +1,5 @@
 using AutoMapper;
 using btlz.Contracts;
-using btlz.Models;
 
 namespace btlz.Configuration.Mappings;
 
@@ -8,16 +7,7 @@ public class NotesMappingProfile : Profile
 {
     public NotesMappingProfile()
     {
-        CreateMap<Note, NoteVm>();
-        
-        CreateMap<IEnumerable<Note>, NotesVm>()
-            .ForCtorParam(nameof(NotesVm.Notes), 
-	           
-                source
-                    => source.MapFrom(notesList 
-                        => notesList.ToList()));
-       
-        CreateMap<CreateNotesDto, Note>()
+        CreateMap<CreateNotesDto, NoteVm>()
             .ForMember(dest 
                 => dest.Id, opt 
                 => opt.Ignore())
@@ -29,7 +19,7 @@ public class NotesMappingProfile : Profile
                 opt 
                     => opt.MapFrom(dest 
                         => dest.Description.Trim()));
-        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), Note>()
+        CreateMap<(int NotesId, UpdateNotesDto UpdateDto), NoteVm>()
             .ForMember(dest
                 => dest.Id, opt
                 => opt.MapFrom(dest
@@ -42,6 +32,5 @@ public class NotesMappingProfile : Profile
                 opt
                     => opt.MapFrom(dest
                         => dest.UpdateDto.Description.Trim()));
-
     }
 }

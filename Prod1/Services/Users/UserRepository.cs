@@ -4,9 +4,6 @@ using btlz.Contracts;
 using btlz.Database;
 using btlz.Exceptions;
 using btlz.Models;
-using btlz.Services;
-
-
 
 namespace btlz.Services;
 
@@ -14,14 +11,14 @@ public class UserRepository : IUserRepository
 {
     private readonly btlzDbContext _dbContext;
     private readonly IMapper _mapper;
-    public UserRepository(btlzDbContext dbContext) 
-        => _dbContext = dbContext;
+    public UserRepository(btlzDbContext dbContext, IMapper mapper) 
+        => (_dbContext, _mapper) = (dbContext, mapper);
     
     public UsersVm GetUsers() 
     {
         var listOfUsers = (
             from user in _dbContext.Users
-            select new UserVm(user.Id, user.Login)
+            select new UserVm(user.Id, user.Login, user.Password)
         ).ToList();
         var users = new UsersVm(listOfUsers);
         return users;
@@ -31,31 +28,33 @@ public class UserRepository : IUserRepository
     {
     var listOfUsers = (
         from user in _dbContext.Users
+        where user.Id == id
         join userId in _dbContext.Users on user.Id equals userId.Id
-        select new UserVm(user.Id, user.Login)
+        select new UserVm(user.Id, user.Login, user.Password)
     ).ToList();
     var notes = new UsersVm(listOfUsers);
         return notes;
     }
     
-    public UsersVm AddUser(CreateUserDto dto)
+    public UserVm AddUser(CreateUserDto dto)
     {
-        var user = _mapper.Map<User>(dto); 
+        var user = new User()
+        {
+           Login = dto.Login,
+           Password = dto.Password
+        };
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
-        return _mapper.Map<UsersVm>(user);
+        return new UserVm(user.Id, user.Login, user.Password);
     }
 
     public UserVm UpdateUser(int userId, UpdateUserDto dto) 
     {
         var oldUser = TryGetUserByIdAndThrowIfNotFound(userId);
         oldUser.Login = dto.Login;
+        oldUser.Password = dto.Password;
         _dbContext.SaveChanges();
-        return new UserVm(oldUser.Id, oldUser.Login)
-        {
-            Id = oldUser.Id,
-            Login = oldUser.Login
-        };
+        return new UserVm(oldUser.Id, oldUser.Login, oldUser.Password);
     }
     
     public void DeleteUser(int id)

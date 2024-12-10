@@ -20,7 +20,7 @@ public class UserController : BaseController
         => Ok(_userRepository.GetUsers());
 
     [HttpGet("{id}")]
-    public ActionResult<UserVm> GetUser(int id)
+    public ActionResult<UsersVm> GetUserById(int id)
         => Ok(_userRepository.GetUserById(id));
 
 

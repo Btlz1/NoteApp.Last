@@ -11,7 +11,6 @@ namespace btlz.Controllers;
 public class NotesController : BaseController
 {
     private readonly INotesRepository _notesRepository;
-    private readonly IUserRepository _userRepository;
     
     public NotesController(INotesRepository notesRepository) 
         => _notesRepository = notesRepository;
@@ -25,7 +24,7 @@ public class NotesController : BaseController
         => Ok(_notesRepository.GetNotesByUserId(userId));
     
     [HttpPost]
-    public ActionResult<int> AddNotes(int userId, CreateNotesDto dto)
+    public ActionResult<NoteVm> AddNotes(int userId, CreateNotesDto dto)
         => Ok(_notesRepository.AddNotes(userId, dto));
     
     [HttpPut("{id}")]
