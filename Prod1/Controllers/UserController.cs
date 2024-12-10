@@ -1,8 +1,6 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using btlz.Abstractions;
 using btlz.Contracts;
-using btlz.Models;
 
 namespace btlz.Controllers;
 
@@ -22,17 +20,14 @@ public class UserController : BaseController
     [HttpGet("{id}")]
     public ActionResult<UsersVm> GetUserById(int id)
         => Ok(_userRepository.GetUserById(id));
-
-
+    
     [HttpPost]
     public ActionResult<int> AddUser(CreateUserDto dto)
         => Ok(_userRepository.AddUser(dto));
 
-
     [HttpPut("{id}")]
     public ActionResult UpdateUser(int id, UpdateUserDto dto)
         => Ok(_userRepository.UpdateUser(id, dto));
-    
     
     [HttpDelete("{id}")]
     public ActionResult DeleteUser(int id)

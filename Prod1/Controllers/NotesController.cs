@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using btlz.Abstractions;
 using btlz.Contracts;
-using AutoMapper;
-using btlz.Models;
 
 namespace btlz.Controllers;
 
@@ -37,5 +35,4 @@ public class NotesController : BaseController
         _notesRepository.DeleteNotes(id);
         return NoContent();
     }
-    
 }
