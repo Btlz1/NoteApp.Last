@@ -24,7 +24,7 @@ public class NotesController : BaseController
         => Ok(_notesRepository.GetNotesByUserId(userId));
     
     [HttpPost]
-    public ActionResult<NoteVm> AddNotes(int userId, CreateNotesDto dto)
+    public ActionResult<int> AddNotes(int userId, CreateNotesDto dto)
         => Ok(_notesRepository.AddNotes(userId, dto));
     
     [HttpPut("{id}")]

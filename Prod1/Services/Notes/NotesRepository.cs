@@ -35,19 +35,13 @@ public class NotesRepository : INotesRepository
         return new NotesVm(listOfNotes);
     }
     
-    public NoteVm AddNotes(int userId, CreateNotesDto dto) 
+    public int AddNotes(int userId, CreateNotesDto dto) 
     {
         _ = TryGetUserByIdAndThrowIfNotFound(userId);
-        var note = new Note
-        {
-            Name = dto.Name,
-            Description = dto.Description,
-            UserId = userId,
-            DateCreated = DateTime.UtcNow
-        };
+        var note = _mapper.Map<Note>(dto);
         _dbContext.Notes.Add(note);
         _dbContext.SaveChanges();
-        return new NoteVm(note.Id, note.Name, note.Description);
+        return note.Id;
     }
 
     public NoteVm UpdateNotes(int id, UpdateNotesDto dto)

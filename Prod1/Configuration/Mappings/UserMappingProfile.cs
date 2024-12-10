@@ -8,7 +8,7 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-	    CreateMap<CreateUserDto, UserVm>()
+	    CreateMap<CreateUserDto, User>()
 		    .ForMember(dest => dest.Id, opt => opt.Ignore())
 		    .ForMember(dest => dest.Login, opt => opt.MapFrom(src => src.Login.Trim()))
 		    .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password.Trim()));

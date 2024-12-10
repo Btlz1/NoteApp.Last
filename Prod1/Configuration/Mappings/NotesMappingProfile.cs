@@ -1,5 +1,6 @@
 using AutoMapper;
 using btlz.Contracts;
+using btlz.Models;
 
 namespace btlz.Configuration.Mappings;
 
@@ -7,7 +8,7 @@ public class NotesMappingProfile : Profile
 {
     public NotesMappingProfile()
     {
-        CreateMap<CreateNotesDto, NoteVm>()
+        CreateMap<CreateNotesDto, Note>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Name, 
                 opt => opt.MapFrom(src => src.Name.Trim()))

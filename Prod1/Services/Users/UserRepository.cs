@@ -36,16 +36,12 @@ public class UserRepository : IUserRepository
         return notes;
     }
     
-    public UserVm AddUser(CreateUserDto dto)
+    public int AddUser(CreateUserDto dto)
     {
-        var user = new User()
-        {
-           Login = dto.Login,
-           Password = dto.Password
-        };
+        var user = _mapper.Map<User>(dto);
         _dbContext.Users.Add(user);
         _dbContext.SaveChanges();
-        return new UserVm(user.Id, user.Login, user.Password);
+        return user.Id;
     }
 
     public UserVm UpdateUser(int userId, UpdateUserDto dto) 

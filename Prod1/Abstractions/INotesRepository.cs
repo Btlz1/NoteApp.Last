@@ -7,7 +7,7 @@ public interface INotesRepository
 {
     NotesVm GetNotes();
     NotesVm GetNotesByUserId(int userId);
-    NoteVm AddNotes(int userId, CreateNotesDto notes);
+    int AddNotes(int userId, CreateNotesDto dto);
     NoteVm UpdateNotes(int id, UpdateNotesDto notes);
     void DeleteNotes(int id);
 }

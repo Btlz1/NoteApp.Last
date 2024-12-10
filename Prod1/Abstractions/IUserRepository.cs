@@ -7,7 +7,7 @@ public interface IUserRepository
 {
     UsersVm GetUsers();
     UsersVm? GetUserById(int id);
-    UserVm AddUser(CreateUserDto dto);
+    int AddUser(CreateUserDto dto);
     UserVm UpdateUser(int userId, UpdateUserDto dto);
     void DeleteUser(int id);
 }
