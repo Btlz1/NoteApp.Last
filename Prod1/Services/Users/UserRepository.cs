@@ -61,7 +61,7 @@ public class UserRepository : IUserRepository
         _dbContext.Users.Remove(user);
         _dbContext.SaveChanges();
     }
-    private User TryGetUserByIdAndThrowIfNotFound(int id)
+    public User TryGetUserByIdAndThrowIfNotFound(int id)
     {
         var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
         if (user is null)

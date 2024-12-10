@@ -10,4 +10,5 @@ public interface IUserRepository
     int AddUser(CreateUserDto dto);
     int UpdateUser(int userId, UpdateUserDto dto);
     void DeleteUser(int id);
+    User TryGetUserByIdAndThrowIfNotFound(int id);
 }

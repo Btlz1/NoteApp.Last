@@ -7,12 +7,13 @@ using btlz.Database;
 
 namespace btlz.Services;
 
-public class NotesRepository : INotesRepository
+public class NotesRepository : INotesRepository 
 {
     private readonly btlzDbContext _dbContext;
     private readonly IMapper _mapper;
-    public NotesRepository(btlzDbContext dbContext, IMapper mapper)
-        => (_dbContext, _mapper) = (dbContext, mapper);
+    private readonly IUserRepository _userRepository;
+    public NotesRepository(btlzDbContext dbContext, IMapper mapper, IUserRepository userRepository)
+        => (_dbContext, _mapper, _userRepository) = (dbContext, mapper, userRepository);
 
     public NotesVm GetNotes()
     {
@@ -35,10 +36,10 @@ public class NotesRepository : INotesRepository
         return new NotesVm(listOfNotes);
     }
     
-    public int AddNotes(int userId, CreateNotesDto dto) 
+    public int AddNotes(int userId, CreateNotesDto dto)
     {
-        _ = TryGetUserByIdAndThrowIfNotFound(userId);
-        var note = _mapper.Map<Note>(dto);
+        _ = _userRepository.TryGetUserByIdAndThrowIfNotFound(userId);
+        var  note = _mapper.Map<Note>(dto);
         _dbContext.Notes.Add(note);
         _dbContext.SaveChanges();
         return note.Id;
@@ -71,13 +72,5 @@ public class NotesRepository : INotesRepository
         }
         return note;
     }
-    private User TryGetUserByIdAndThrowIfNotFound(int id)
-    {
-        var user = _dbContext.Users.FirstOrDefault(u => u.Id == id);
-        if (user is null)
-        {
-            throw new UserNotFoundException(id);
-        }
-        return user;
-    }
+    
 }
