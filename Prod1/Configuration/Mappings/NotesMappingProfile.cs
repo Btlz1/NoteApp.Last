@@ -8,29 +8,17 @@ public class NotesMappingProfile : Profile
     public NotesMappingProfile()
     {
         CreateMap<CreateNotesDto, NoteVm>()
-            .ForMember(dest 
-                => dest.Id, opt 
-                => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Name, 
-                opt 
-                    => opt.MapFrom(dest 
-                        => dest.Name.Trim()))
+                opt => opt.MapFrom(src => src.Name.Trim()))
             .ForMember(dest => dest.Description, 
-                opt 
-                    => opt.MapFrom(dest 
-                        => dest.Description.Trim()));
+                opt => opt.MapFrom(src => src.Description.Trim()));
+        
         CreateMap<(int NotesId, UpdateNotesDto UpdateDto), NoteVm>()
-            .ForMember(dest
-                => dest.Id, opt
-                => opt.MapFrom(dest
-                    => dest.NotesId))
-            .ForMember(dest => dest.Name,
-                opt
-                    => opt.MapFrom(dest
-                        => dest.UpdateDto.Name.Trim()))
-            .ForMember(dest => dest.Description,
-                opt
-                    => opt.MapFrom(dest
-                        => dest.UpdateDto.Description.Trim()));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.NotesId))
+            .ForMember(dest => dest.Name, 
+                opt => opt.MapFrom(src => src.UpdateDto.Name.Trim()))
+            .ForMember(dest => dest.Description, 
+                opt => opt.MapFrom(src => src.UpdateDto.Description.Trim()));
     }
 }
