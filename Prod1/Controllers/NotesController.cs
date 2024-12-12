@@ -1,6 +1,9 @@
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Mvc;
 using btlz.Abstractions;
 using btlz.Contracts;
+using btlz.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace btlz.Controllers;
 
@@ -8,31 +11,54 @@ namespace btlz.Controllers;
 [Route("api/[controller]")]
 public class NotesController : BaseController
 {
-    private readonly INotesRepository _notesRepository;
-    
-    public NotesController(INotesRepository notesRepository) 
-        => _notesRepository = notesRepository;
+    private static readonly ConcurrentBag<Note> Notes = new();
+
+    [HttpPost]
+    public IActionResult AddNote(string name)
+    {
+        Note note = new()
+        {
+            Id = Notes.Count,
+            UserId = HttpContext.ExtractUserIdFromClaims()!.Value, 
+            Name = name,
+            Finished = false,
+        };
+        Notes.Add(note);
+        return Ok();
+    }
 
     [HttpGet]
-    public ActionResult<NotesVm> GetNotes()
-        => Ok(_notesRepository.GetNotes());
-    
-    [HttpGet("{userId}")]
-    public ActionResult<NotesVm> GetNotesByUserId(int userId)
-        => Ok(_notesRepository.GetNotesByUserId(userId));
-    
-    [HttpPost]
-    public ActionResult<int> AddNotes(int userId, CreateNotesDto dto)
-        => Ok(_notesRepository.AddNotes(userId, dto));
-    
-    [HttpPut("{id}")]
-    public ActionResult<int> UpdateNotes(int id, UpdateNotesDto dto)
-        => Ok(_notesRepository.UpdateNotes(id, dto));
+    public List<Note> GetNotes() 
+        => Notes
+            .Where(note => 
+                note.UserId == HttpContext.ExtractUserIdFromClaims()!.Value)
+            .ToList();
+
+    [HttpPut]
+    [Authorize]
+    public IActionResult Complete(int noteId, int userId)
+    {
+        var note = Notes.FirstOrDefault(note => 
+            note.Id == noteId 
+            && note.UserId == userId);
+        if (note is null)
+        {
+            return NotFound();
+        }
+        note.Finished = true;
+        return Ok();
+    }
     
     [HttpDelete("{id}")]
     public ActionResult DeleteNotes(int id)
     {
-        _notesRepository.DeleteNotes(id);
-        return NoContent();
+        var note = Notes.FirstOrDefault(note =>
+            note.Id == id);
+        if (note is null)
+        {
+            return NotFound();
+        }
+
+        return Ok();
     }
 }

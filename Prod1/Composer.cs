@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebApplication1.Configuration.DataBase;
 
-namespace WebApplication1;
+namespace btlz;
 
 public static class Composer
 {

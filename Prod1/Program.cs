@@ -1,20 +1,21 @@
-using WebApplication1;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddInfrastructure(builder.Configuration)
-    .AddSwagger()
-    .AddApplicationServices()
+    .AddConfiguredSwagger()
+    .AddJwt()
+    .AddAuth(builder.Configuration)
     .AddControllers();
 
 var app = builder.Build();
 
-app.UseExceptionHandler("/error");
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.MapControllers();
+app.UseAuthentication(); // Сначала аутентификация
+app.UseAuthorization(); // Потом авторизация
+app.MapControllers(); // И только потом контроллеры
 
 app.Run();

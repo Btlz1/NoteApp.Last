@@ -265,3 +265,11 @@ C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\obj\Debug\net8.0\refint\Pro
 C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\obj\Debug\net8.0\Prod1.pdb
 C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\obj\Debug\net8.0\Prod1.genruntimeconfig.cache
 C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\obj\Debug\net8.0\ref\Prod1.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Федор\RiderProjects\NoteApp.Last\Prod1\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
