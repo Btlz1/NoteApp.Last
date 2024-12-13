@@ -11,7 +11,7 @@ public interface IJwtTokensRepository
 public class JwtTokensRepository : IJwtTokensRepository
 {
     private readonly ConcurrentDictionary<int, string> _tokens = new();
-
+    
     public void Update(int userId, string token) => _tokens[userId] = token;
 
     public bool Verify(int userId, string token) => 

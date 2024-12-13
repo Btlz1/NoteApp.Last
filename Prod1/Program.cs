@@ -1,10 +1,17 @@
+using btlz.Composer;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddConfiguredSwagger()
     .AddJwt()
     .AddAuth(builder.Configuration)
+    .AddInfrastructure(builder.Configuration)
+    .AddSwagger()
+    .AddApplicationServices()
     .AddControllers();
+    
+
 
 var app = builder.Build();
 
@@ -14,8 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthentication(); // Сначала аутентификация
-app.UseAuthorization(); // Потом авторизация
-app.MapControllers(); // И только потом контроллеры
+app.UseAuthentication(); 
+app.UseAuthorization(); 
+app.MapControllers(); 
 
 app.Run();

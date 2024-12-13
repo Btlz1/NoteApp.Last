@@ -4,6 +4,7 @@ using btlz.Contracts;
 using btlz.Database;
 using btlz.Exceptions;
 using btlz.Models;
+using btlz.Settings;
 
 namespace btlz.Services;
 
@@ -11,8 +12,12 @@ public class UserRepository : IUserRepository
 {
     private readonly btlzDbContext _dbContext;
     private readonly IMapper _mapper;
-    public UserRepository(btlzDbContext dbContext, IMapper mapper) 
-        => (_dbContext, _mapper) = (dbContext, mapper);
+    private readonly IJwtTokensRepository _jwtTokensRepository;
+    private readonly IJwtTokenGenerator _tokenGenerator;
+    public UserRepository(btlzDbContext dbContext, IMapper mapper, 
+        IJwtTokensRepository jwtTokensRepository, IJwtTokenGenerator tokenGenerator) 
+        => (_dbContext, _mapper, _jwtTokensRepository, _tokenGenerator)
+            = (dbContext, mapper, jwtTokensRepository, tokenGenerator);
     
     public UsersVm GetUsers() 
     {
@@ -35,13 +40,19 @@ public class UserRepository : IUserRepository
     var notes = new UsersVm(listOfUsers);
         return notes;
     }
+
     
-    public int AddUser(CreateUserDto dto)
+
+    public User AddUser(CreateUserDto dto)
     {
+        if (_dbContext.Users.Any(user => user.Login == dto.Login))
+        {
+            throw new ArgumentException(nameof(dto.Login));
+        }
         var user = _mapper.Map<User>(dto);
-        _dbContext.Users.Add(user);
+        _dbContext.Users.Add(user); 
         _dbContext.SaveChanges();
-        return user.Id;
+        return user;
     }
 
     public int UpdateUser(int userId, UpdateUserDto dto) 
@@ -60,6 +71,13 @@ public class UserRepository : IUserRepository
         var user = TryGetUserByIdAndThrowIfNotFound(id);
         _dbContext.Users.Remove(user);
         _dbContext.SaveChanges();
+    }
+
+    public string Generate(User user)
+    {
+        var token = _tokenGenerator.GenerateToken(user);
+        _jwtTokensRepository.Update(user.Id, token);
+        return token;
     }
     public User TryGetUserByIdAndThrowIfNotFound(int id)
     {

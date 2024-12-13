@@ -41,7 +41,7 @@ public static class ServicesExtension
 	        JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new()
+                 options.TokenValidationParameters = new()
                 {
                     ValidateIssuer = true, 
                     ValidateAudience = true, 
@@ -83,11 +83,9 @@ public static class ServicesExtension
                 new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme);
             defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
             options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-
-            // Добавляем политику проверки пользователя из токена
+            
             options.AddPolicy("NotesOwner", policy =>
             {
-                // Перед тем как проверять пользователя, отсекаем всех не аутентифицированных
                 policy.RequireAuthenticatedUser();
                 policy.AddRequirements(new NoteOwnerRequirement());
             });
