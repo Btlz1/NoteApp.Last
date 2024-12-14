@@ -5,6 +5,8 @@ using btlz.Database;
 using btlz.Exceptions;
 using btlz.Models;
 using btlz.Settings;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace btlz.Services;
 
@@ -71,6 +73,19 @@ public class UserRepository : IUserRepository
         var user = TryGetUserByIdAndThrowIfNotFound(id);
         _dbContext.Users.Remove(user);
         _dbContext.SaveChanges();
+    }
+    public User LoginUser(string login,[FromBody] string password)
+    {
+        var user = _dbContext.Users.FirstOrDefault(user => (user.Login == login));
+        if (user is null)
+        {
+            throw new ArgumentException(nameof(login));
+        }
+        if (user.Password != password)
+        {
+            throw new ArgumentException(nameof(password));
+        }
+        return user;
     }
 
     public string Generate(User user)

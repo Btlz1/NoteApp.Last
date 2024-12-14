@@ -16,10 +16,11 @@ public class NotesRepository : INotesRepository
     public NotesRepository(btlzDbContext dbContext, IMapper mapper, IUserRepository userRepository)
         => (_dbContext, _mapper, _userRepository) = (dbContext, mapper, userRepository);
 
-    public List<NoteVm> GetNotes()
+    public List<NoteVm> GetNotes(int userId)
     {
         var listOfNotes = (
             from note in _dbContext.Notes
+            where note.UserId == userId
             select new NoteVm(note.UserId, note.Id, note.Name, note.Description)
         ).ToList();
         return listOfNotes;

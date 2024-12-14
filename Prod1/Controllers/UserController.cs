@@ -53,4 +53,13 @@ public class UserController : BaseController
         _jwtTokensRepository.Update(user.Id, token);
         return token;
     }
+    
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public ActionResult<string> Login(string login, string password)
+    {
+        var user = _userRepository.LoginUser(login, password);
+        var token = Generate(user);
+        return token;
+    }
 }

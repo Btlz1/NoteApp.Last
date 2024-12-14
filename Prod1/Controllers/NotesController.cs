@@ -19,13 +19,10 @@ public class NotesController : BaseController
         => _notesRepository = notesRepository;
 
     [HttpGet]
-    public ActionResult<Note> GetNotes()
-    {
-        List<NoteVm> notes = _notesRepository.GetNotes();
-       var listOfNotes = notes.Where((note =>
-            note.UserId == HttpContext.ExtractUserIdFromClaims()!.Value)).ToList();
-        return Ok(listOfNotes);
-    }
+    [Authorize(Policy = "NotesOwner")]
+    public ActionResult<Note> GetNotes(int userId) 
+        => Ok(_notesRepository.GetNotes(userId));
+   
     
     [HttpPost]
     public ActionResult<Note> AddNotes(CreateNotesDto dto)
