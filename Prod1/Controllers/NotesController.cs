@@ -1,11 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using btlz.Abstractions;
 using btlz.Contracts;
+using btlz.Models;
+using btlz.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace btlz.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
+
 public class NotesController : BaseController
 {
     private readonly INotesRepository _notesRepository;
@@ -14,25 +19,41 @@ public class NotesController : BaseController
         => _notesRepository = notesRepository;
 
     [HttpGet]
-    public ActionResult<NotesVm> GetNotes()
-        => Ok(_notesRepository.GetNotes());
-    
-    [HttpGet("{userId}")]
-    public ActionResult<NotesVm> GetNotesByUserId(int userId)
-        => Ok(_notesRepository.GetNotesByUserId(userId));
+    public ActionResult<Note> GetNotes()
+    {
+        List<NoteVm> notes = _notesRepository.GetNotes();
+       var listOfNotes = notes.Where((note =>
+            note.UserId == HttpContext.ExtractUserIdFromClaims()!.Value)).ToList();
+        return Ok(listOfNotes);
+    }
     
     [HttpPost]
-    public ActionResult<int> AddNotes(int userId, CreateNotesDto dto)
-        => Ok(_notesRepository.AddNotes(userId, dto));
-    
+    public ActionResult<Note> AddNotes(CreateNotesDto dto)
+    {
+        Note note = new()
+        {
+             Name = dto.Name,
+             Description = dto.Description,
+             UserId = HttpContext.ExtractUserIdFromClaims()!.Value,
+             Finished = false,
+             DateCreated = DateTime.UtcNow
+        };
+        _notesRepository.AddNotes(note);
+        return Ok(note);
+    }
+
+
     [HttpPut("{id}")]
-    public ActionResult<int> UpdateNotes(int id, UpdateNotesDto dto)
+    [Authorize(Policy = "NotesOwner")]
+    public ActionResult<int> UpdateNotes(int userId, int id, UpdateNotesDto dto)
         => Ok(_notesRepository.UpdateNotes(id, dto));
     
     [HttpDelete("{id}")]
-    public ActionResult DeleteNotes(int id)
+    [Authorize(Policy = "NotesOwner")]
+    public ActionResult DeleteNotes(int userId, int id)
     {
         _notesRepository.DeleteNotes(id);
         return NoContent();
     }
 }
+

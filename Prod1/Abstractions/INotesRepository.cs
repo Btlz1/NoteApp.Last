@@ -5,9 +5,8 @@ namespace btlz.Abstractions;
 
 public interface INotesRepository
 {
-    NotesVm GetNotes();
-    NotesVm GetNotesByUserId(int userId);
-    int AddNotes(int userId, CreateNotesDto dto);
+    List<NoteVm> GetNotes();
+    Note AddNotes(Note dto);
     int UpdateNotes(int id, UpdateNotesDto dto);
     void DeleteNotes(int id);
 }

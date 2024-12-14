@@ -10,6 +10,7 @@ namespace btlz.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController : BaseController
 {
     private readonly IUserRepository _userRepository;
@@ -18,13 +19,11 @@ public class UserController : BaseController
     
     public UserController(IUserRepository userRepository, IJwtTokensRepository jwtTokensRepository, IJwtTokenGenerator jwtTokenGenerator)
         => (_userRepository, _jwtTokensRepository, _jwtTokenGenerator) = (userRepository, jwtTokensRepository, jwtTokenGenerator);
-   
-    [AllowAnonymous]
+    
     [HttpGet]
     public ActionResult<UsersVm> GetUsers()
         => Ok(_userRepository.GetUsers());
     
-    [AllowAnonymous]
     [HttpGet("{id}")]
     public ActionResult<UsersVm> GetUserById(int id)
         => Ok(_userRepository.GetUserById(id));
