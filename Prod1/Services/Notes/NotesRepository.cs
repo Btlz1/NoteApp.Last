@@ -4,7 +4,8 @@ using btlz.Contracts;
 using btlz.Exceptions;
 using btlz.Models;
 using btlz.Database;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Linq;
+
 
 namespace btlz.Services;
 
@@ -18,10 +19,10 @@ public class NotesRepository : INotesRepository
 
     public List<NoteVm> GetNotes(int userId)
     {
-        var listOfNotes = (
+            var listOfNotes = (
             from note in _dbContext.Notes
             where note.UserId == userId
-            select new NoteVm(note.UserId, note.Id, note.Name, note.Description)
+            select new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)
         ).ToList();
         return listOfNotes;
     }
@@ -44,6 +45,7 @@ public class NotesRepository : INotesRepository
         note.Description = updatedNote.Description;
         note.Finished = true;
         note.EditDate = DateTime.UtcNow;
+        note.Tags = updatedNote.Tags;
         _dbContext.SaveChanges();
         return note.Id;
     }
@@ -53,6 +55,34 @@ public class NotesRepository : INotesRepository
         var note = TryGetNotesByIdAndThrowIfNotFound(id);
         _dbContext.Notes.Remove(note);
         _dbContext.SaveChanges();
+    }
+    
+    public List<NoteVm> FilteredByTags(Enum tags, int userId)
+    {
+        var listOfNotes = (
+            from note in _dbContext.Notes
+            where note.UserId == userId  
+            select new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)
+        ).ToList();
+        var filteredList = listOfNotes.Where(n => Equals(n.Tags, tags))
+            .ToList();
+        
+        return filteredList;
+    }
+
+    public List<NoteVm> SortedByTags(Enum tags, int userId)
+    {
+        var listOfNotes = (
+                from note in _dbContext.Notes
+                where note.UserId == userId
+                select new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)
+            ).ToList();
+        
+        var sortedNotes = listOfNotes
+            .OrderByDescending(n => Equals(n.Tags, tags))
+            .ThenBy(n => n.Name)
+            .ToList();
+        return sortedNotes;
     }
 
     private Note TryGetNotesByIdAndThrowIfNotFound(int id)

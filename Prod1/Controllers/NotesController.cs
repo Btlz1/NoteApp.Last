@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using btlz.Abstractions;
 using btlz.Contracts;
 using btlz.Models;
-using btlz.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace btlz.Controllers;
@@ -22,7 +21,17 @@ public class NotesController : BaseController
     [Authorize(Policy = "NotesOwner")]
     public ActionResult<Note> GetNotes(int userId) 
         => Ok(_notesRepository.GetNotes(userId));
-   
+    
+    [HttpGet("/FilteredByTags")]
+    [Authorize(Policy = "NotesOwner")]
+    public ActionResult<Note> FilteredByTags(Tag tag, int userId) 
+        => Ok(_notesRepository.FilteredByTags(tag, userId));
+    
+    [HttpGet("/SortedByTags")]
+    [Authorize(Policy = "NotesOwner")]
+    public ActionResult<Note> SortedByTags(Tag tag, int userId) 
+        => Ok(_notesRepository.SortedByTags(tag, userId));
+    
     
     [HttpPost]
     public ActionResult<Note> AddNotes(CreateNotesDto dto)
@@ -38,8 +47,7 @@ public class NotesController : BaseController
         _notesRepository.AddNotes(note);
         return Ok(note);
     }
-
-
+    
     [HttpPut("{id}")]
     [Authorize(Policy = "NotesOwner")]
     public ActionResult<int> UpdateNotes(int userId, int id, UpdateNotesDto dto)

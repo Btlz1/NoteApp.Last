@@ -4,7 +4,6 @@ using btlz.Contracts;
 using btlz.Models;
 using btlz.Settings;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.JSInterop.Infrastructure;
 
 namespace btlz.Controllers;
 

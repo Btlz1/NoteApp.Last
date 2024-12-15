@@ -49,7 +49,7 @@ namespace WebApplication1.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
 
-                    b.Property<int?>("Priority")
+                    b.Property<int?>("Tags")
                         .HasColumnType("integer");
 
                     b.Property<int>("UserId")
