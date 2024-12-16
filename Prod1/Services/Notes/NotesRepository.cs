@@ -27,7 +27,6 @@ public class NotesRepository : INotesRepository
         return listOfNotes;
     }
     
-    
     public Note AddNotes(Note dto)
     {
         var  note = _mapper.Map<Note>(dto);
@@ -39,7 +38,6 @@ public class NotesRepository : INotesRepository
     public int UpdateNotes(int id, UpdateNotesDto dto)
     {
         var note = TryGetNotesByIdAndThrowIfNotFound(id);
-        
         var updatedNote = _mapper.Map<(int, UpdateNotesDto), Note>((id, dto));
         note.Name = updatedNote.Name;
         note.Description = updatedNote.Description;
@@ -66,7 +64,6 @@ public class NotesRepository : INotesRepository
         ).ToList();
         var filteredList = listOfNotes.Where(n => Equals(n.Tags, tags))
             .ToList();
-        
         return filteredList;
     }
 
@@ -77,7 +74,6 @@ public class NotesRepository : INotesRepository
                 where note.UserId == userId
                 select new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)
             ).ToList();
-        
         var sortedNotes = listOfNotes
             .OrderByDescending(n => Equals(n.Tags, tags))
             .ThenBy(n => n.Name)
@@ -94,5 +90,4 @@ public class NotesRepository : INotesRepository
         }
         return note;
     }
-    
 }

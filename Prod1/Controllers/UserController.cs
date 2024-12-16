@@ -19,6 +19,15 @@ public class UserController : BaseController
     public UserController(IUserRepository userRepository, IJwtTokensRepository jwtTokensRepository, IJwtTokenGenerator jwtTokenGenerator)
         => (_userRepository, _jwtTokensRepository, _jwtTokenGenerator) = (userRepository, jwtTokensRepository, jwtTokenGenerator);
     
+    [AllowAnonymous]
+    [HttpPost("login")]
+    public ActionResult<string> Login(string login, string password)
+    {
+        var user = _userRepository.LoginUser(login, password);
+        var token = Generate(user);
+        return token;
+    }
+    
     [HttpGet]
     public ActionResult<UsersVm> GetUsers()
         => Ok(_userRepository.GetUsers());
@@ -46,19 +55,11 @@ public class UserController : BaseController
         _userRepository.DeleteUser(id);
         return NoContent();
     }
+    
     private string Generate(User user)
     {
         var token = _jwtTokenGenerator.GenerateToken(user);
         _jwtTokensRepository.Update(user.Id, token);
-        return token;
-    }
-    
-    [AllowAnonymous]
-    [HttpPost("login")]
-    public ActionResult<string> Login(string login, string password)
-    {
-        var user = _userRepository.LoginUser(login, password);
-        var token = Generate(user);
         return token;
     }
 }

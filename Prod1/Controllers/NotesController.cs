@@ -32,7 +32,6 @@ public class NotesController : BaseController
     public ActionResult<Note> SortedByTags(Tag tag, int userId) 
         => Ok(_notesRepository.SortedByTags(tag, userId));
     
-    
     [HttpPost]
     public ActionResult<Note> AddNotes(CreateNotesDto dto)
     {

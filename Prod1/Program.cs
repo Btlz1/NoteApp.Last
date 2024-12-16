@@ -10,9 +10,6 @@ builder.Services
     .AddSwagger()
     .AddApplicationServices()
     .AddControllers();
-    
-    
-
 
 var app = builder.Build();
 
