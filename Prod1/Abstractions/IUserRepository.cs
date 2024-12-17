@@ -5,11 +5,11 @@ namespace btlz.Abstractions;
 
 public interface IUserRepository 
 {
-    UsersVm GetUsers();
-    UsersVm? GetUserById(int id);
-    User AddUser(CreateUserDto dto);
-    int UpdateUser(int userId, UpdateUserDto dto);
-    void DeleteUser(int id);
-    User LoginUser(string login, string password);
+    Task<UsersVm> GetUsers();
+    Task<UsersVm?> GetUserById(int id);
+    Task<User> AddUser(CreateUserDto dto);
+    Task<int> UpdateUser(int userId, UpdateUserDto dto);
+    Task DeleteUser(int id);
+    Task<User> LoginUser(string login, string password);
     User TryGetUserByIdAndThrowIfNotFound(int id);
 }

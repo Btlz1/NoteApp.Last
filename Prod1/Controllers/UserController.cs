@@ -21,38 +21,38 @@ public class UserController : BaseController
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public ActionResult<string> Login(string login, string password)
+    public async Task<ActionResult<string>>Login(string login, string password)
     {
-        var user = _userRepository.LoginUser(login, password);
+        var user = await _userRepository.LoginUser(login, password);
         var token = Generate(user);
         return token;
     }
     
     [HttpGet]
-    public ActionResult<UsersVm> GetUsers()
-        => Ok(_userRepository.GetUsers());
+    public async Task<ActionResult<UsersVm>> GetUsers()
+        => Ok(await _userRepository.GetUsers());
     
     [HttpGet("{id}")]
-    public ActionResult<UsersVm> GetUserById(int id)
-        => Ok(_userRepository.GetUserById(id));
+    public async Task<ActionResult<UsersVm>> GetUserById(int id)
+        => Ok(await _userRepository.GetUserById(id));
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public ActionResult<string> AddUser(CreateUserDto dto)
+    public async Task<ActionResult<string>> AddUser(CreateUserDto dto)
     {
-        var user = _userRepository.AddUser(dto);
+        var user = await _userRepository.AddUser(dto);
         var token = Generate(user);
         return Ok(token);
     }
 
     [HttpPut("{id}")]
-    public ActionResult UpdateUser(int id, UpdateUserDto dto)
-        => Ok(_userRepository.UpdateUser(id, dto));
+    public async Task<ActionResult> UpdateUser(int id, UpdateUserDto dto)
+        => Ok(await _userRepository.UpdateUser(id, dto));
     
     [HttpDelete("{id}")]
-    public ActionResult DeleteUser(int id)
+    public async Task<ActionResult> DeleteUser(int id)
     {
-        _userRepository.DeleteUser(id);
+        await _userRepository.DeleteUser(id);
         return NoContent();
     }
     

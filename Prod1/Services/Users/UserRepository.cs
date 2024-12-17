@@ -7,6 +7,7 @@ using btlz.Models;
 using btlz.Settings;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace btlz.Services;
 
@@ -21,62 +22,62 @@ public class UserRepository : IUserRepository
         => (_dbContext, _mapper, _jwtTokensRepository, _tokenGenerator)
             = (dbContext, mapper, jwtTokensRepository, tokenGenerator);
     
-    public UsersVm GetUsers() 
+    public async Task<UsersVm> GetUsers()
     {
-        var listOfUsers = (
-            from user in _dbContext.Users
-            select new UserVm(user.Id, user.Login, user.Password)
-        ).ToList();
+        var listOfUsers = await _dbContext.Users
+            .Select(user => new UserVm(user.Id, user.Login, user.Password))
+            .ToListAsync();  // Используем ToListAsync для асинхронного выполнения
+
         var users = new UsersVm(listOfUsers);
         return users;
     }
 
-    public UsersVm? GetUserById(int id)
+    public async Task<UsersVm?> GetUserById(int id)
     {
-    var listOfUsers = (
-        from user in _dbContext.Users
-        where user.Id == id
-        join userId in _dbContext.Users on user.Id equals userId.Id
-        select new UserVm(user.Id, user.Login, user.Password)
-    ).ToList();
-    var notes = new UsersVm(listOfUsers);
-        return notes;
+        _ = TryGetUserByIdAndThrowIfNotFound(id);
+        var listOfUsers = await _dbContext.Users
+            .Where(user => user.Id == id)
+            .Select(user => new UserVm(user.Id, user.Login, user.Password))
+            .ToListAsync();
+        
+        var userById = new UsersVm(listOfUsers);
+        return userById;
     }
 
     
 
-    public User AddUser(CreateUserDto dto)
+    public async Task<User> AddUser(CreateUserDto dto)
     {
-        if (_dbContext.Users.Any(user => user.Login == dto.Login))
+        if (await _dbContext.Users.AnyAsync(user => user.Login == dto.Login))
         {
             throw new ArgumentException(nameof(dto.Login));
         }
         var user = _mapper.Map<User>(dto);
-        _dbContext.Users.Add(user); 
-        _dbContext.SaveChanges();
+        await _dbContext.Users.AddAsync(user); 
+        await _dbContext.SaveChangesAsync();
         return user;
     }
 
-    public int UpdateUser(int userId, UpdateUserDto dto) 
+    public async Task<int> UpdateUser(int userId, UpdateUserDto dto) 
     {
         var user = TryGetUserByIdAndThrowIfNotFound(userId);
         
         var updatedUser = _mapper.Map<(int, UpdateUserDto), User>((userId, dto));
         user.Login = updatedUser.Login;
         user.Password = updatedUser.Password;
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
         return user.Id;
     }
     
-    public void DeleteUser(int id)
+    public async Task DeleteUser(int id)
     {
         var user = TryGetUserByIdAndThrowIfNotFound(id);
         _dbContext.Users.Remove(user);
-        _dbContext.SaveChanges();
+        await _dbContext.SaveChangesAsync();
     }
-    public User LoginUser(string login,[FromBody] string password)
+    public async Task<User> LoginUser(string login,[FromBody] string password)
     {
-        var user = _dbContext.Users.FirstOrDefault(user => (user.Login == login));
+        var user =await _dbContext.Users.FirstOrDefaultAsync(user => (user.Login == login));
         if (user is null)
         {
             throw new ArgumentException(nameof(login));
