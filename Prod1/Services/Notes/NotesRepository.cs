@@ -15,29 +15,42 @@ public class NotesRepository : INotesRepository
     private readonly btlzDbContext _dbContext;
     private readonly IMapper _mapper;
     private readonly IUserRepository _userRepository;
+    private readonly CancellationTokenSource _cts;
     public NotesRepository(btlzDbContext dbContext, IMapper mapper, IUserRepository userRepository)
         => (_dbContext, _mapper, _userRepository) = (dbContext, mapper, userRepository);
 
     public async Task<List<NoteVm>> GetNotes(int userId)
     {
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
+        
         var listOfNotes = await _dbContext.Notes
             .Where(note => note.UserId == userId)
             .Select(note => new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags))
-            .ToListAsync();
+            .ToListAsync(token);
 
         return listOfNotes;
     }
     
     public async Task<Note> AddNotes(Note dto)
     {
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
+        
         var  note = _mapper.Map<Note>(dto);
-        await _dbContext.Notes.AddAsync(note);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.Notes.AddAsync(note, token);
+        await _dbContext.SaveChangesAsync(token);
         return note;
     }
 
     public async Task<int> UpdateNotes(int id, UpdateNotesDto dto)
     {
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
+        
         var note = TryGetNotesByIdAndThrowIfNotFound(id);
         var updatedNote = _mapper.Map<(int, UpdateNotesDto), Note>((id, dto));
         note.Name = updatedNote.Name;
@@ -45,40 +58,48 @@ public class NotesRepository : INotesRepository
         note.Finished = true;
         note.EditDate = DateTime.UtcNow;
         note.Tags = updatedNote.Tags;
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(token);
         return note.Id;
     }
  
     public async Task DeleteNotes(int id)
     {
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
+        
         var note = TryGetNotesByIdAndThrowIfNotFound(id);
         _dbContext.Notes.Remove(note);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(token);
     }
     
-    public async Task<List<NoteVm>> FilteredByTags(Enum tags, int userId)
+    public async Task<List<NoteVm>> FilteredByTags(Tag tag, int userId)
     {
-        var enumTagValue = Convert.ToByte(tags); // Преобразуем Enum в его числовое значение
-
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
+        
         var filteredNotes =await _dbContext.Notes
-            .Where(note => note.UserId == userId && note.Tags.HasValue && note.Tags.Value == (Tag)enumTagValue) // Фильтруем на основе nullable Tag
-            .Select(note => new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)) // Преобразуем в NoteVm
-            .ToListAsync(); // Выполняем запрос и получаем список
+            .Where(note => note.UserId == userId && note.Tags.HasValue && note.Tags.Value == tag) 
+            .Select(note => new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)) 
+            .ToListAsync(token); 
 
         return filteredNotes;
     }
 
-    public async Task<List<NoteVm>> SortedByTags(Enum tags, int userId)
+    public async Task<List<NoteVm>> SortedByTags(Tag tag, int userId)
     {
-        var enumTagValue = Convert.ToByte(tags); 
+        using var cts = new CancellationTokenSource();
+        cts.CancelAfter(5000);
+        var token = cts.Token;
 
         var sortedNotes =await _dbContext.Notes
             .Where(note => note.UserId == userId) 
-            .OrderByDescending(note => note.Tags.HasValue && note.Tags.Value == (Tag)enumTagValue) 
+            .OrderByDescending(note => note.UserId == userId && note.Tags.HasValue && note.Tags.Value == tag)
             .ThenBy(note => note.Tags == null ? 1 : 0) 
             .ThenBy(note => note.Name) 
             .Select(note => new NoteVm(note.UserId, note.Id, note.Name, note.Description, note.Tags)) 
-            .ToListAsync(); 
+            .ToListAsync(token); 
 
         return sortedNotes;
     }
