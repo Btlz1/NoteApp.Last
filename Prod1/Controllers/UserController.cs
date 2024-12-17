@@ -21,7 +21,7 @@ public class UserController : BaseController
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<string>>Login(string login, string password)
+    public async Task<ActionResult<string>>Login(string login,[FromBody] string password)
     {
         var user = await _userRepository.LoginUser(login, password);
         var token = Generate(user);
